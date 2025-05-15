@@ -18,6 +18,9 @@ const db = new Pool({
 const SECRET = process.env.JWT_SECRET;
 const saltRounds = 10;
 
+const restaurantesRoutes = require('./routes/restaurantes');
+const pratosRoutes = require('./routes/pratos');
+
 app.use(express.json());
 app.use(cors());
 
@@ -74,6 +77,9 @@ app.post('/login', async (req, res) => {
         return res.status(500).json({ error: "Erro interno no servidor." });
     }
 });
+
+app.use('/api/restaurantes', restaurantesRoutes);
+app.use('/api/pratos', pratosRoutes);
 
 app.listen(3001, () => {
     console.log("Servidor rodando na porta 3001");
