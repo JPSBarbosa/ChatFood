@@ -7,7 +7,7 @@ function Register() {
   const navigate = useNavigate();
 
   const handleRegister = (values) => {
-    Axios.post("http://localhost:3001/register", {
+    Axios.post("http://localhost:3001/auth/register", {
       email: values.email,
       password: values.password,
       tipo: values.tipo,

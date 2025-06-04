@@ -8,7 +8,7 @@ function Login() {
 
   const handleLogin = async (values) => {
     try {
-      const response = await Axios.post("http://localhost:3001/login", {
+      const response = await Axios.post("http://localhost:3001/auth/login", {
         email: values.email,
         password: values.password,
       });
