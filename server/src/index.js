@@ -22,14 +22,20 @@ const authRoutes = require('./routes/authRoutes');
 const restaurantesRoutes = require('./routes/restaurantes');
 const pratosRoutes = require('./routes/pratos');
 
-app.use('/auth', authRoutes);
+const createAuthRepository = require('./repositories/authRepository');
+const createAuthService = require('./services/authService');
+const createAuthController = require('./controllers/authController');
+
+const userRepository = createAuthRepository(db);
+const authService = createAuthService(userRepository);
+const authController = createAuthController(authService);
+
+console.log(authController); 
+
+app.use('/auth', authRoutes(authController));
 app.use('/restaurantes', restaurantesRoutes);
 app.use('/pratos', pratosRoutes);
 
 app.listen(3001, () => {
     console.log("Servidor rodando na porta 3001");
 });
-
-db.connect()
-  .then(() => console.log('✅ Conexão com o banco de dados estabelecida!'))
-  .catch((err) => console.error('❌ Erro ao conectar no banco:', err));

@@ -1,21 +1,21 @@
-const authService = require('../services/authService');
-
-exports.register = async (req, res) => {
+module.exports = (authService) => ({
+  register: async (req, res) => {
     try {
-        const result = await authService.register(req.body);
-        res.status(result.status).json(result.body);
+      const result = await authService.register(req.body);
+      res.status(result.status).json(result.body);
     } catch (err) {
-        console.error("Erro no registro:", err);
-        res.status(500).json({ error: "Erro interno no servidor." });
+      console.error("Erro no registro:", err);
+      res.status(500).json({ error: "Erro interno no servidor." });
     }
-};
+  },
 
-exports.login = async (req, res) => {
+  login: async (req, res) => {
     try {
-        const result = await authService.login(req.body);
-        res.status(result.status).json(result.body);
+      const result = await authService.login(req.body);
+      res.status(result.status).json(result.body);
     } catch (err) {
-        console.error("Erro no login:", err);
-        res.status(500).json({ error: "Erro interno no servidor." });
+      console.error("Erro no login:", err);
+      res.status(500).json({ error: "Erro interno no servidor." });
     }
-};
+  }
+});
