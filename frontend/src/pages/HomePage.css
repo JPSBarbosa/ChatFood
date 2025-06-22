@@ -1,0 +1,75 @@
+/* HomePage.css (Versão Atualizada) */
+
+/* O contêiner principal da página continua igual */
+.homepage-container {
+  background-color: #e0f0ff; /* Um azul um pouco mais suave */
+  min-height: 100vh;
+  padding: 25px;
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+  align-items: flex-start;
+  justify-content: center; /* <<< NOVO: Centraliza o conteúdo na tela */
+}
+
+/* MUDANÇA PRINCIPAL:
+  Este container agora é só um organizador, sem estilo visual próprio.
+*/
+.dishes-section {
+  flex-grow: 1; /* <<< AJUSTE: Permite crescer */
+  max-width: 900px; /* <<< AJUSTE DE TAMANHO: Impede que fique largo demais */
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* <<< NOVO: Espaçamento entre os blocos de restaurante */
+}
+
+/* NOVO ESTILO:
+  Agora, CADA restaurante é um bloco branco isolado.
+*/
+.restaurant-section {
+  background-color: #fff;
+  padding: 20px 25px; /* Mais preenchimento horizontal */
+  border-radius: 12px; /* Bordas mais arredondadas */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra mais suave */
+}
+
+/* A lista de pratos dentro de cada bloco */
+.dishes-list {
+  display: flex; /* Faz os cards ficarem em linha */
+  flex-direction: row;
+  overflow-x: auto; /* Permite rolar horizontalmente se não couber */
+  gap: 20px;
+  padding-top: 15px;
+  padding-bottom: 15px; /* Adiciona espaço para a barra de rolagem */
+}
+
+/* O carrinho continua praticamente igual */
+.cart-section {
+  flex-shrink: 0; /* <<< AJUSTE: Impede que o carrinho encolha */
+  width: 320px; /* <<< AJUSTE: Define uma largura fixa para o carrinho */
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 25px;
+  height: fit-content;
+}
+
+/* Estilos de texto */
+h1 {
+  color: #1a2a45; /* Cor mais escura para o título */
+  margin: 0 0 5px 0;
+}
+
+h2 {
+  color: #334e7c;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+p {
+  color: #6b7280; /* Cinza mais suave para o parágrafo */
+  margin: 0 0 20px 0;
+}

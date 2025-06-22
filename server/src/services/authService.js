@@ -28,11 +28,15 @@ module.exports = (userRepository) => ({
       return { status: 401, body: { message: "Email ou senha incorretos!" } };
     }
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email, tipo: user.tipo },
-      SECRET,
-      { expiresIn: '1h' }
-    );
+    const tokenPayload = {
+      id: user.id,
+      email: user.email,
+      tipo: user.tipo,
+      nome: user.nome,
+      url_foto_perfil: user.url_foto_perfil
+    };
+
+    const token = jwt.sign(tokenPayload, SECRET, { expiresIn: '1h' });
 
     return { status: 200, body: { message: "Login realizado com sucesso!", token } };
   }

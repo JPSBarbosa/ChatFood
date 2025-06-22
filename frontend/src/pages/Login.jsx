@@ -20,7 +20,7 @@ function Login() {
       const tipo = payload.tipo;
 
       if (tipo === "cliente") {
-        navigate("/cliente/home");
+        navigate("/homepage");
       } else if (tipo === "restaurante") {
         navigate("/restaurante/home");
       } else {
