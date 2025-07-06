@@ -13,5 +13,7 @@ module.exports = (userController) => {
 
   router.put('/perfil', upload.single('profilePic'), userController.updateProfile); // <-- corrige aqui
 
+  router.delete('/conta', userController.deleteAccount);
+
   return router;
 };

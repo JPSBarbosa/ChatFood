@@ -1,14 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { Pool } = require("pg");
-const db = new Pool();
 
 router.post("/", async (req, res) => {
-  const { nome, cnpj, endereco, telefone, id_usuario } = req.body;
+  const { nome, url_logo, id_usuario } = req.body;
   try {
-    const result = await db.query(
-      "INSERT INTO restaurantes (nome, cnpj, endereco, telefone, id_usuario) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [nome, cnpj, endereco, telefone, id_usuario]
+    const result = await req.app.locals.db.query(
+      "INSERT INTO restaurantes (nome, url_logo, id_usuario) VALUES ($1, $2, $3) RETURNING *",
+      [nome, url_logo || null, id_usuario]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -19,7 +17,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM restaurantes");
+    const result = await req.app.locals.db.query("SELECT * FROM restaurantes");
     res.status(200).json(result.rows);
   } catch (err) {
     console.error("Erro ao buscar restaurantes:", err);
@@ -27,13 +25,27 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/usuario/:id_usuario", async (req, res) => {
+  const { id_usuario } = req.params;
+  try {
+    const result = await req.app.locals.db.query(
+      "SELECT * FROM restaurantes WHERE id_usuario = $1",
+      [id_usuario]
+    );
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Erro ao buscar restaurante do usuário:", err);
+    res.status(500).json({ error: "Erro ao buscar restaurante" });
+  }
+});
+
 router.put("/:id", async (req, res) => {
-  const { nome, cnpj, endereco, telefone } = req.body;
+  const { nome, url_logo } = req.body;
   const { id } = req.params;
   try {
-    const result = await db.query(
-      "UPDATE restaurantes SET nome = $1, cnpj = $2, endereco = $3, telefone = $4 WHERE id = $5 RETURNING *",
-      [nome, cnpj, endereco, telefone, id]
+    const result = await req.app.locals.db.query(
+      "UPDATE restaurantes SET nome = $1, url_logo = $2 WHERE id = $3 RETURNING *",
+      [nome, url_logo || null, id]
     );
     res.status(200).json(result.rows[0]);
   } catch (err) {
@@ -45,7 +57,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    await db.query("DELETE FROM restaurantes WHERE id = $1", [id]);
+    await req.app.locals.db.query("DELETE FROM restaurantes WHERE id = $1", [id]);
     res.status(200).json({ message: "Restaurante deletado com sucesso" });
   } catch (err) {
     console.error("Erro ao deletar restaurante:", err);

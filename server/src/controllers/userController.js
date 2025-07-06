@@ -39,5 +39,18 @@ module.exports = (userService) => ({
       console.error("Erro ao atualizar perfil no controller:", err);
       res.status(500).json({ error: "Erro interno no servidor." });
     }
+  },
+
+  // Deletar conta do usuário
+  async deleteAccount(req, res) {
+    try {
+      const result = await userService.deleteUserAccount(req.userId);
+      
+      res.status(result.status).json(result.body);
+
+    } catch (err) {
+      console.error("Erro ao deletar conta no controller:", err);
+      res.status(500).json({ error: "Erro interno no servidor." });
+    }
   }
 });

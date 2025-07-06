@@ -6,10 +6,10 @@ module.exports = (db) => ({
   );
   return result.rows[0];
 },
-  create: async (email, passwordHash, tipo) => {
+  create: async (email, passwordHash, tipo, nome) => {
     await db.query(
-      "INSERT INTO usuarios (email, password, tipo) VALUES ($1, $2, $3)",
-      [email, passwordHash, tipo]
+      "INSERT INTO usuarios (email, password, tipo, nome) VALUES ($1, $2, $3, $4)",
+      [email, passwordHash, tipo, nome]
     );
   }
 });

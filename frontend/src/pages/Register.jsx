@@ -8,6 +8,7 @@ function Register() {
 
   const handleRegister = (values) => {
     Axios.post("http://localhost:3001/auth/register", {
+      nome: values.nome,
       email: values.email,
       password: values.password,
       tipo: values.tipo,
@@ -22,6 +23,9 @@ function Register() {
   };
 
   const validationSchema = Yup.object().shape({
+    nome: Yup.string()
+      .min(2, "Nome deve ter pelo menos 2 caracteres")
+      .required("Campo obrigatório"),
     email: Yup.string().email("Email inválido").required("Campo obrigatório"),
     password: Yup.string()
       .min(8, "Mínimo 8 caracteres")
@@ -37,6 +41,7 @@ function Register() {
       <h1>Cadastro</h1>
       <Formik
         initialValues={{
+          nome: "",
           email: "",
           password: "",
           confirmPassword: "",
@@ -46,6 +51,14 @@ function Register() {
         validationSchema={validationSchema}
       >
         <Form className="login-form">
+          <div className="login-form-group">
+            <Field name="nome" className="form-field" placeholder="Nome" />
+            <ErrorMessage
+              name="nome"
+              component="span"
+              className="form-error"
+            />
+          </div>
           <div className="login-form-group">
             <Field name="email" className="form-field" placeholder="Email" />
             <ErrorMessage

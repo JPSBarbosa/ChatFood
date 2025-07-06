@@ -1,14 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { Pool } = require("pg");
-const db = new Pool();
 
 router.post("/", async (req, res) => {
-  const { nome, descricao, preco, id_restaurante } = req.body;
+  const { nome, descricao, preco, restaurante_id } = req.body;
   try {
-    const result = await db.query(
-      "INSERT INTO pratos (nome, descricao, preco, id_restaurante) VALUES ($1, $2, $3, $4) RETURNING *",
-      [nome, descricao, preco, id_restaurante]
+    const result = await req.app.locals.db.query(
+      "INSERT INTO pratos (nome, descricao, preco, restaurante_id) VALUES ($1, $2, $3, $4) RETURNING *",
+      [nome, descricao, preco, restaurante_id]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -19,7 +17,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM pratos");
+    const result = await req.app.locals.db.query("SELECT * FROM pratos");
     res.status(200).json(result.rows);
   } catch (err) {
     console.error("Erro ao buscar pratos:", err);
@@ -27,12 +25,12 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/restaurante/:id_restaurante", async (req, res) => {
-  const { id_restaurante } = req.params;
+router.get("/restaurante/:restaurante_id", async (req, res) => {
+  const { restaurante_id } = req.params;
   try {
-    const result = await db.query(
-      "SELECT * FROM pratos WHERE id_restaurante = $1",
-      [id_restaurante]
+    const result = await req.app.locals.db.query(
+      "SELECT * FROM pratos WHERE restaurante_id = $1",
+      [restaurante_id]
     );
     res.status(200).json(result.rows);
   } catch (err) {
@@ -42,12 +40,12 @@ router.get("/restaurante/:id_restaurante", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  const { nome, descricao, preco } = req.body;
+  const { nome, descricao, preco, url_imagem } = req.body;
   const { id } = req.params;
   try {
-    const result = await db.query(
-      "UPDATE pratos SET nome = $1, descricao = $2, preco = $3 WHERE id = $4 RETURNING *",
-      [nome, descricao, preco, id]
+    const result = await req.app.locals.db.query(
+      "UPDATE pratos SET nome = $1, descricao = $2, preco = $3, url_imagem = $4 WHERE id = $5 RETURNING *",
+      [nome, descricao, preco, url_imagem || null, id]
     );
     res.status(200).json(result.rows[0]);
   } catch (err) {
@@ -59,7 +57,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    await db.query("DELETE FROM pratos WHERE id = $1", [id]);
+    await req.app.locals.db.query("DELETE FROM pratos WHERE id = $1", [id]);
     res.status(200).json({ message: "Prato deletado com sucesso" });
   } catch (err) {
     console.error("Erro ao deletar prato:", err);

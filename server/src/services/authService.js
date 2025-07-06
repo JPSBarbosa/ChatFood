@@ -5,14 +5,14 @@ const SECRET = process.env.JWT_SECRET;
 const saltRounds = 10;
 
 module.exports = (userRepository) => ({
-  register: async ({ email, password, tipo }) => {
+  register: async ({ email, password, tipo, nome }) => {
     const user = await userRepository.findByEmail(email);
     if (user) {
       return { status: 400, body: { message: "Email já cadastrado!" } };
     }
 
     const hash = await bcrypt.hash(password, saltRounds);
-    await userRepository.create(email, hash, tipo || 'cliente');
+    await userRepository.create(email, hash, tipo || 'cliente', nome);
 
     return { status: 201, body: { message: "Cadastrado com sucesso!" } };
   },

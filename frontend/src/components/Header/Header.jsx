@@ -40,18 +40,23 @@ function Header() {
     profileImageUrl = `${BACKEND_URL}${user.url_foto_perfil}`;
   }
 
+  const getHomeLink = () => {
+    if (!user) return '/homepage';
+    return user.tipo === 'restaurante' ? '/restaurante/home' : '/homepage';
+  };
 
   return (
     <header className="app-header">
       <div className="header-content">
-        <Link to="/homepage" className="logo">
+        <Link to={getHomeLink()} className="logo">
           CHATFOOD
         </Link>
         <nav className="main-nav">
           {user && (
             <>
               <span className="welcome-message">
-                Olá, {user.nome || 'Usuário'}
+                Olá, {user.nome || 'Usuário'} 
+                <span className="user-type">({user.tipo === 'restaurante' ? 'Restaurante' : 'Cliente'})</span>
               </span>
 
               <div className="profile-menu">
@@ -63,6 +68,12 @@ function Header() {
                 />
                 <div className="dropdown-content">
                   <Link to="/perfil">Perfil</Link>
+                  {user.tipo === 'restaurante' && (
+                    <Link to="/restaurante/home">Painel do Restaurante</Link>
+                  )}
+                  {user.tipo === 'cliente' && (
+                    <Link to="/homepage">Home</Link>
+                  )}
                   <button onClick={handleLogout}>Sair</button>
                 </div>
               </div>

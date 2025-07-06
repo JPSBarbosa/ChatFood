@@ -51,14 +51,22 @@ const pratoRepository = createPratoRepository(db);
 const pratoService = createPratoService(pratoRepository);
 const pratoController = createPratoController(pratoService);
 
+// --- Bloco de Montagem do Chatbot ---
+const ChatbotService = require('./services/chatbotService');
+const chatbotRoutes = require('./routes/chatbotRoutes');
+
+const chatbotService = new ChatbotService(db);
 
 // --- Bloco de registro de rotas ---
 const restaurantesRoutes = require('./routes/restaurantes');
+const pratosRoutes = require('./routes/pratos');
 
 app.use('/auth', authRoutes(authController));
 app.use('/api/user', userRoutes(userController));
 app.use('/api', pratoRoutes(pratoController)); 
+app.use('/api/pratos', pratosRoutes);
 app.use('/restaurantes', restaurantesRoutes);
+app.use('/api/chatbot', chatbotRoutes(chatbotService));
 
 app.use((req, res, next) => {
   console.log(`[404 Handler] ROTA NÃO ENCONTRADA: ${req.method} ${req.originalUrl}`);
@@ -67,4 +75,5 @@ app.use((req, res, next) => {
 
 app.listen(3001, () => {
     console.log("Servidor rodando na porta 3001");
+    console.log("🤖 Chatbot IA ativo em /api/chatbot");
 });

@@ -35,5 +35,32 @@ module.exports = (userRepository) => ({
     const newToken = jwt.sign(tokenPayload, SECRET, { expiresIn: '1h' });
     
     return { status: 200, body: { user: updatedUser, token: newToken } };
+  },
+
+  async deleteUserAccount(userId) {
+    try {
+      // Primeiro, busca o usuário para verificar o tipo
+      const user = await userRepository.findById(userId);
+      if (!user) {
+        return { status: 404, body: { message: "Usuário não encontrado." } };
+      }
+
+      // Se for restaurante, deleta o restaurante primeiro
+      if (user.tipo === 'restaurante') {
+        await userRepository.deleteRestaurantByUserId(userId);
+      }
+
+      // Deleta a conta do usuário
+      const deleted = await userRepository.deleteUser(userId);
+      
+      if (!deleted) {
+        return { status: 404, body: { message: "Erro ao deletar conta." } };
+      }
+
+      return { status: 200, body: { message: "Conta deletada com sucesso." } };
+    } catch (error) {
+      console.error("Erro ao deletar conta:", error);
+      return { status: 500, body: { message: "Erro interno ao deletar conta." } };
+    }
   }
 });

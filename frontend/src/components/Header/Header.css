@@ -115,3 +115,10 @@
   font-weight: 500;
   white-space: nowrap; /* Impede que o nome quebre a linha */
 }
+
+.user-type {
+  color: #4facfe;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-left: 5px;
+}

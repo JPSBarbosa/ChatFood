@@ -18,9 +18,9 @@ function App() {
         <Route element={<ProtectedLayout />}>
           <Route path="/restaurante/home" element={<RestauranteHome />} />
           <Route path="/homepage" element={<HomePage />} />
+          <Route path="/perfil" element={<ProfilePage />} />
         </Route>
 
-        <Route path="/perfil" element={<ProfilePage />} />
         <Route path="*" element={<h1>404 - Página não encontrada</h1>} />
       </Routes>
     </Router>

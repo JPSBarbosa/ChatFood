@@ -1,75 +1,290 @@
-/* HomePage.css (Versão Atualizada) */
+/* HomePage.css - Identidade Visual Azul */
 
-/* O contêiner principal da página continua igual */
+/* O contêiner principal da página */
 .homepage-container {
-  background-color: #e0f0ff; /* Um azul um pouco mais suave */
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
   min-height: 100vh;
   padding: 25px;
   display: flex;
   flex-direction: row;
   gap: 25px;
   align-items: flex-start;
-  justify-content: center; /* <<< NOVO: Centraliza o conteúdo na tela */
+  justify-content: center;
 }
 
-/* MUDANÇA PRINCIPAL:
-  Este container agora é só um organizador, sem estilo visual próprio.
-*/
-.dishes-section {
-  flex-grow: 1; /* <<< AJUSTE: Permite crescer */
-  max-width: 900px; /* <<< AJUSTE DE TAMANHO: Impede que fique largo demais */
+/* Loading container */
+.loading-container {
   display: flex;
   flex-direction: column;
-  gap: 25px; /* <<< NOVO: Espaçamento entre os blocos de restaurante */
-}
-
-/* NOVO ESTILO:
-  Agora, CADA restaurante é um bloco branco isolado.
-*/
-.restaurant-section {
-  background-color: #fff;
-  padding: 20px 25px; /* Mais preenchimento horizontal */
-  border-radius: 12px; /* Bordas mais arredondadas */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra mais suave */
-}
-
-/* A lista de pratos dentro de cada bloco */
-.dishes-list {
-  display: flex; /* Faz os cards ficarem em linha */
-  flex-direction: row;
-  overflow-x: auto; /* Permite rolar horizontalmente se não couber */
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
   gap: 20px;
-  padding-top: 15px;
-  padding-bottom: 15px; /* Adiciona espaço para a barra de rolagem */
 }
 
-/* O carrinho continua praticamente igual */
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top: 4px solid #4facfe;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Seção de pratos */
+.dishes-section {
+  flex-grow: 1;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Seção de restaurante */
+.restaurant-section {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+/* Lista de pratos */
+.dishes-list {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Esconder a barra de rolagem padrão */
+.dishes-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Container para indicadores de rolagem */
+.dishes-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Indicadores de rolagem */
+.scroll-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(79, 172, 254, 0.9);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+  z-index: 10;
+}
+
+.scroll-indicator:hover {
+  background: rgba(79, 172, 254, 1);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+}
+
+.scroll-indicator.left {
+  left: 10px;
+}
+
+.scroll-indicator.right {
+  right: 10px;
+}
+
+.scroll-indicator:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: translateY(-50%) scale(0.9);
+}
+
+/* Gradiente para indicar mais conteúdo */
+.dishes-list::before,
+.dishes-list::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dishes-list::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.8), transparent);
+}
+
+.dishes-list::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.8), transparent);
+}
+
+/* Gradientes aparecem apenas quando há mais de 4 pratos */
+.dishes-container .dishes-list::before,
+.dishes-container .dishes-list::after {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Mostrar gradientes quando há mais de 4 pratos */
+.dishes-container:has(.scroll-indicator) .dishes-list::before,
+.dishes-container:has(.scroll-indicator) .dishes-list::after {
+  opacity: 1;
+}
+
+/* Seção do carrinho */
 .cart-section {
-  flex-shrink: 0; /* <<< AJUSTE: Impede que o carrinho encolha */
-  width: 320px; /* <<< AJUSTE: Define uma largura fixa para o carrinho */
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+  width: 320px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 25px;
   height: fit-content;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 /* Estilos de texto */
 h1 {
-  color: #1a2a45; /* Cor mais escura para o título */
-  margin: 0 0 5px 0;
+  color: white;
+  margin: 0 0 10px 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 30px 0;
+  font-size: 1.1rem;
+  font-weight: 400;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 h2 {
-  color: #334e7c;
+  color: #1e3c72;
   margin: 0;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eef2f7;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e1e8ed;
+  font-weight: 600;
+  font-size: 1.4rem;
 }
 
 p {
-  color: #6b7280; /* Cinza mais suave para o parágrafo */
+  color: #6b7280;
   margin: 0 0 20px 0;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .homepage-container {
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .cart-section {
+    width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .homepage-container {
+    flex-direction: column;
+    padding: 15px;
+    gap: 15px;
+  }
+  
+  .dishes-section {
+    max-width: 100%;
+  }
+  
+  .cart-section {
+    width: 100%;
+    position: static;
+    order: -1;
+  }
+  
+  .restaurant-section {
+    padding: 20px 25px;
+  }
+  
+  .dishes-list {
+    gap: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  /* Ajustar botões de rolagem para mobile */
+  .scroll-indicator {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+
+  .scroll-indicator.left {
+    left: 5px;
+  }
+
+  .scroll-indicator.right {
+    right: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .homepage-container {
+    padding: 10px;
+  }
+  
+  .restaurant-section {
+    padding: 15px 20px;
+  }
+  
+  .dishes-list {
+    gap: 12px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
 }

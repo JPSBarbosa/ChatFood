@@ -53,7 +53,7 @@ function Login() {
 
           <div className="form-buttons">
             <button type="button" className="form-button" onClick={() => navigate("/cadastro")}>
-              Cadastre-se
+              Cadastro
             </button>
             <button type="submit" className="form-button">
               Login

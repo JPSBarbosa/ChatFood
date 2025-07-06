@@ -1,6 +1,7 @@
 // src/pages/ProfilePage/ProfilePage.jsx
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './ProfilePage.css';
 
@@ -19,12 +20,17 @@ api.interceptors.request.use(async config => {
 });
 
 function ProfilePage() {
+  const navigate = useNavigate();
+  
   // === DECLARAÇÕES DE ESTADO (Onde 'setPreview' é criado) ===
   const [profile, setProfile] = useState(null);
   const [nome, setNome] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteTimer, setDeleteTimer] = useState(60); // 1 minuto em segundos
+  const [timerStarted, setTimerStarted] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -45,6 +51,19 @@ function ProfilePage() {
         setLoading(false);
       });
   }, []);
+
+  // Timer para deletar conta
+  useEffect(() => {
+    let interval;
+    if (timerStarted && deleteTimer > 0) {
+      interval = setInterval(() => {
+        setDeleteTimer(prev => prev - 1);
+      }, 1000);
+    } else if (timerStarted && deleteTimer === 0) {
+      handleDeleteAccount();
+    }
+    return () => clearInterval(interval);
+  }, [timerStarted, deleteTimer]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -77,11 +96,73 @@ function ProfilePage() {
     }
   };
 
+  const handleBackButton = () => {
+    // Verificar o tipo de usuário e redirecionar adequadamente
+    if (profile && profile.tipo === 'restaurante') {
+      navigate('/restaurante/home');
+    } else {
+      navigate('/homepage');
+    }
+  };
+
+  const getBackButtonText = () => {
+    if (profile && profile.tipo === 'restaurante') {
+      return '← Voltar para Painel do Restaurante';
+    } else {
+      return '← Voltar para Home';
+    }
+  };
+
+  const handleDeleteConfirm = () => {
+    setShowDeleteConfirm(true);
+    setDeleteTimer(60); // Reset timer para 1 minuto
+    setTimerStarted(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setDeleteTimer(60);
+    setTimerStarted(false);
+  };
+
+  const handleStartDeleteTimer = () => {
+    setTimerStarted(true);
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await api.delete('/user/conta');
+      localStorage.removeItem('token');
+      alert('Conta deletada com sucesso!');
+      navigate('/');
+    } catch (error) {
+      console.error("Erro ao deletar conta:", error);
+      alert('Erro ao deletar conta. Tente novamente.');
+      setShowDeleteConfirm(false);
+      setDeleteTimer(60);
+      setTimerStarted(false);
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   if (loading) return <div>Carregando perfil...</div>;
   if (!profile) return <div>Não foi possível carregar o perfil.</div>;
 
   return (
     <div className="profile-page-container">
+      <div className="back-button-container">
+        <button 
+          className="back-button" 
+          onClick={handleBackButton}
+        >
+          {getBackButtonText()}
+        </button>
+      </div>
       <form className="profile-card" onSubmit={handleSaveChanges}>
         <h1>Meu Perfil</h1>
         <div className="profile-picture-section">
@@ -117,8 +198,73 @@ function ProfilePage() {
             <input type="email" id="email" value={profile.email} disabled />
           </div>
           <button type="submit" className="save-button">Salvar Alterações</button>
+          
+          <button 
+            type="button" 
+            className="delete-account-button"
+            onClick={handleDeleteConfirm}
+          >
+            Deletar Conta
+          </button>
         </div>
       </form>
+
+      {/* Modal de confirmação de deletar conta */}
+      {showDeleteConfirm && (
+        <div className="modal-overlay">
+          <div className="delete-modal">
+            <h2>⚠️ Confirmar Exclusão da Conta</h2>
+            <p>
+              <strong>Atenção!</strong> Esta ação não pode ser desfeita.
+            </p>
+            {timerStarted ? (
+              <>
+                <p>Sua conta será permanentemente deletada em:</p>
+                <div className="timer-display">
+                  <span className="timer">{formatTime(deleteTimer)}</span>
+                </div>
+                <p>
+                  Se você for um restaurante, o restaurante também será deletado junto com todos os pratos.
+                </p>
+                <div className="modal-actions">
+                  <button 
+                    type="button" 
+                    className="cancel-button"
+                    onClick={handleCancelDelete}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p>
+                  Se você for um restaurante, o restaurante também será deletado junto com todos os pratos.
+                </p>
+                <p>
+                  <strong>Clique em "Confirmar Exclusão" para iniciar o timer de 1 minuto.</strong>
+                </p>
+                <div className="modal-actions">
+                  <button 
+                    type="button" 
+                    className="cancel-button"
+                    onClick={handleCancelDelete}
+                  >
+                    Cancelar
+                  </button>
+                  <button 
+                    type="button" 
+                    className="confirm-delete-button"
+                    onClick={handleStartDeleteTimer}
+                  >
+                    Confirmar Exclusão
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
