@@ -1,22 +1,28 @@
 import React, { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Header from './Header/Header';
 
 function ProtectedLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    console.log("ProtectedLayout - URL atual:", location.pathname);
     const token = localStorage.getItem('token');
+    console.log("ProtectedLayout - Token encontrado:", !!token);
+    
     if (!token) {
+      console.log("ProtectedLayout - Redirecionando para login");
       navigate('/');
     }
-  }, [navigate]);
+  }, [navigate, location]);
+
+  console.log("ProtectedLayout - Renderizando com Outlet");
 
   return (
     <div>
       <Header />
       <main>
-        {/* As páginas filhas (HomePage, ProfilePage, RestauranteHome) serão renderizadas aqui */}
         <Outlet />
       </main>
     </div>

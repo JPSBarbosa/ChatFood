@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const SECRET = process.env.JWT_SECRET;
 
 module.exports = (userRepository) => ({
-
   async getUserProfile(userId) {
     const user = await userRepository.findById(userId);
     if (!user) {
@@ -11,10 +10,10 @@ module.exports = (userRepository) => ({
     return { status: 200, body: user };
   },
 
-   async updateUserProfile(userId, nome, file) {
+  async updateUserProfile(userId, nome, file) {
     let updatedUser;
     
-     if (file && file.filename) {
+    if (file && file.filename) {
       const urlFotoPerfil = `/uploads/${file.filename}`;
       updatedUser = await userRepository.updateProfileWithPicture(userId, nome, urlFotoPerfil);
     } else {
@@ -39,18 +38,15 @@ module.exports = (userRepository) => ({
 
   async deleteUserAccount(userId) {
     try {
-      // Primeiro, busca o usuário para verificar o tipo
       const user = await userRepository.findById(userId);
       if (!user) {
         return { status: 404, body: { message: "Usuário não encontrado." } };
       }
 
-      // Se for restaurante, deleta o restaurante primeiro
       if (user.tipo === 'restaurante') {
         await userRepository.deleteRestaurantByUserId(userId);
       }
 
-      // Deleta a conta do usuário
       const deleted = await userRepository.deleteUser(userId);
       
       if (!deleted) {

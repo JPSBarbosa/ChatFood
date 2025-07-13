@@ -9,6 +9,8 @@ import ProtectedLayout from "./components/ProtectedLayout"; // Ajuste o caminho 
 import './App.css';
 
 function App() {
+  console.log("App.js - Renderizando");
+
   return (
     <Router>
       <Routes>
@@ -21,6 +23,7 @@ function App() {
           <Route path="/perfil" element={<ProfilePage />} />
         </Route>
 
+        <Route path="/teste" element={<div>Página de teste funcionando!</div>} />
         <Route path="*" element={<h1>404 - Página não encontrada</h1>} />
       </Routes>
     </Router>

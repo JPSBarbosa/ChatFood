@@ -1,5 +1,3 @@
-// src/components/Header/Header.jsx (Versão Final e Robusta)
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -16,7 +14,6 @@ function Header() {
       const token = localStorage.getItem('token');
       if (token) {
         const decodedToken = jwtDecode(token);
-        // O console.log abaixo nos ajuda a depurar o conteúdo do token
         console.log("Token decodificado no Header:", decodedToken);
         setUser(decodedToken);
       }
@@ -27,16 +24,29 @@ function Header() {
   }, []);
 
   const handleLogout = () => {
+    console.log("Logout iniciado");
     localStorage.removeItem('token');
-    navigate('/');
+    setUser(null);
+    navigate('/', { replace: true });
   };
 
-  // <<< LÓGICA MELHORADA AQUI >>>
-  // Criamos uma variável para a URL da imagem com uma verificação mais segura
+  const handleProfileClick = () => {
+    console.log("Navegando para perfil");
+    navigate('/perfil');
+  };
+
+  const handleHomeClick = () => {
+    console.log("Navegando para home");
+    if (user?.tipo === 'restaurante') {
+      navigate('/restaurante/home');
+    } else {
+      navigate('/homepage');
+    }
+  };
+
   let profileImageUrl = `https://ui-avatars.com/api/?name=${user?.nome || user?.email || 'User'}&background=random`;
 
   if (user && user.url_foto_perfil && user.url_foto_perfil.startsWith('/uploads')) {
-    // Só usamos a URL do perfil se ela existir E começar com '/uploads/'
     profileImageUrl = `${BACKEND_URL}${user.url_foto_perfil}`;
   }
 
@@ -61,18 +71,17 @@ function Header() {
 
               <div className="profile-menu">
                 <img
-                  // Usamos a nossa variável segura
                   src={profileImageUrl}
                   alt="Foto do perfil"
                   className="profile-pic"
                 />
                 <div className="dropdown-content">
-                  <Link to="/perfil">Perfil</Link>
+                  <button onClick={handleProfileClick}>Perfil</button>
                   {user.tipo === 'restaurante' && (
-                    <Link to="/restaurante/home">Painel do Restaurante</Link>
+                    <button onClick={handleHomeClick}>Painel do Restaurante</button>
                   )}
                   {user.tipo === 'cliente' && (
-                    <Link to="/homepage">Home</Link>
+                    <button onClick={handleHomeClick}>Home</button>
                   )}
                   <button onClick={handleLogout}>Sair</button>
                 </div>

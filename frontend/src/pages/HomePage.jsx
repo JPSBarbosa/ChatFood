@@ -118,11 +118,7 @@ function HomePage() {
 
   // Atualiza carrinho quando chatbot adiciona ou limpa
   const handleChatbotCartUpdate = (newItems) => {
-    if (newItems && newItems.length === 0) {
-      // Limpa o carrinho se receber array vazio
-      setCartItems([]);
-    } else if (newItems && newItems.length > 0) {
-      // Sincroniza completamente o carrinho com os itens do chatbot
+    if (JSON.stringify(newItems) !== JSON.stringify(cartItems)) {
       setCartItems(newItems);
     }
   };

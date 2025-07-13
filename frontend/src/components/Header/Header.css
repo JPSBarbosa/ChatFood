@@ -2,23 +2,22 @@
 
 .app-header {
   background-color: #ffffff;
-  padding: 0 40px; /* Espaçamento nas laterais */
+  padding: 0 40px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   height: 70px;
   display: flex;
   align-items: center;
-  position: sticky; /* Opcional: faz o header ficar fixo no topo ao rolar */
+  position: sticky;
   top: 0;
-  z-index: 1000; /* Garante que ele fique sobre outros elementos */
+  z-index: 1000;
 }
 
-/* Este container usa flex para alinhar o logo na esquerda e o menu na direita */
 .header-content {
   width: 100%;
-  max-width: 1400px; /* Limita a largura do conteúdo em telas muito grandes */
-  margin: 0 auto; /* Centraliza o conteúdo */
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
-  justify-content: space-between; /* MÁGICA: joga cada item para uma ponta */
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -35,9 +34,8 @@
   color: #5d8bf8;
 }
 
-/* O container do menu de perfil */
 .profile-menu {
-  position: relative; /* ESSENCIAL para o dropdown funcionar */
+  position: relative;
   display: inline-block;
   padding-bottom: 20px; 
   margin-bottom: -20px; 
@@ -54,34 +52,32 @@
 }
 
 .profile-menu:hover .profile-pic {
-  transform: scale(1.1); /* Efeito de zoom na foto */
+  transform: scale(1.1);
 }
 
 .dropdown-content {
   position: absolute;
   right: 0;
-  top: 60px; /* Distância abaixo do ícone */
+  top: 60px;
   background-color: white;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-  z-index: 1;
+  z-index: 1001;
   border-radius: 8px;
   padding: 8px 0;
-  
-  /* --- A MÁGICA ESTÁ AQUI --- */
-  opacity: 0; /* Começa transparente */
-  visibility: hidden; /* Começa inacessível */
-  transform: translateY(10px); /* Começa um pouco para baixo */
-  /* Transição suave para aparecer, e com um pequeno atraso para sumir */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  pointer-events: none;
 }
 
-/* MÁGICA: Mostra o dropdown quando o mouse está sobre o .profile-menu */
 .profile-menu:hover .dropdown-content {
-  opacity: 1; /* Fica visível */
+  opacity: 1;
   visibility: visible;
-  transform: translateY(0); /* Sobe para a posição normal */
-  transition-delay: 0s; /* A transição de entrada é imediata */
+  transform: translateY(0);
+  transition-delay: 0s;
+  pointer-events: auto;
 }
 
 .dropdown-content a,
@@ -96,6 +92,7 @@
   border: none;
   cursor: pointer;
   font-size: 1rem;
+  transition: background-color 0.2s ease;
 }
 
 .dropdown-content a:hover,
@@ -103,17 +100,22 @@
   background-color: #f1f1f1;
 }
 
+.dropdown-content a:focus,
+.dropdown-content button:focus {
+  background-color: #e8f0fe;
+  outline: none;
+}
+
 .main-nav {
   display: flex;
   align-items: center;
-  gap: 20px; /* Espaçamento entre a mensagem e o menu da foto */
+  gap: 20px;
 }
 
-/* Estilo para a mensagem de boas-vindas */
 .welcome-message {
   color: #555;
   font-weight: 500;
-  white-space: nowrap; /* Impede que o nome quebre a linha */
+  white-space: nowrap;
 }
 
 .user-type {

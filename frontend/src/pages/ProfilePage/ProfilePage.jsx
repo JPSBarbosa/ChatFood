@@ -5,12 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './ProfilePage.css';
 
-// Instância do axios que já configuramos
 const api = axios.create({
   baseURL: 'http://localhost:3001/api',
 });
 
-// Interceptor para adicionar o token em todas as requisições
 api.interceptors.request.use(async config => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -21,22 +19,19 @@ api.interceptors.request.use(async config => {
 
 function ProfilePage() {
   const navigate = useNavigate();
-  
-  // === DECLARAÇÕES DE ESTADO (Onde 'setPreview' é criado) ===
   const [profile, setProfile] = useState(null);
   const [nome, setNome] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleteTimer, setDeleteTimer] = useState(60); // 1 minuto em segundos
+  const [deleteTimer, setDeleteTimer] = useState(60);
   const [timerStarted, setTimerStarted] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     api.get('/user/perfil')
       .then(response => {
-        // === DECLARAÇÃO DA VARIÁVEL 'userData' ===
         const userData = response.data;
         setProfile(userData);
         setNome(userData.nome || '');
@@ -52,7 +47,6 @@ function ProfilePage() {
       });
   }, []);
 
-  // Timer para deletar conta
   useEffect(() => {
     let interval;
     if (timerStarted && deleteTimer > 0) {
@@ -97,7 +91,6 @@ function ProfilePage() {
   };
 
   const handleBackButton = () => {
-    // Verificar o tipo de usuário e redirecionar adequadamente
     if (profile && profile.tipo === 'restaurante') {
       navigate('/restaurante/home');
     } else {
@@ -115,7 +108,7 @@ function ProfilePage() {
 
   const handleDeleteConfirm = () => {
     setShowDeleteConfirm(true);
-    setDeleteTimer(60); // Reset timer para 1 minuto
+    setDeleteTimer(60);
     setTimerStarted(false);
   };
 
@@ -209,7 +202,6 @@ function ProfilePage() {
         </div>
       </form>
 
-      {/* Modal de confirmação de deletar conta */}
       {showDeleteConfirm && (
         <div className="modal-overlay">
           <div className="delete-modal">
